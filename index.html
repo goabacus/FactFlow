@@ -1,0 +1,2064 @@
+// Here's a simple file structure:
+/*
+factvault/
+├── index.html           # Main HTML file
+├── css/
+│   └── styles.css       # All styling
+├── js/
+│   ├── app.js           # Main application logic
+│   ├── facts.js         # Fact data management
+│   └── ui.js            # UI manipulation functions
+└── README.md            # Project documentation
+*/
+
+////////////////////////////////////////////////////
+// index.html
+////////////////////////////////////////////////////
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FactVault - Fascinating Facts Daily</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC3klEQVR4Ae2XA4xcYRSFz7Zt27Zt27Zt2zbqZ9u2bdu2beO8M3mTl9dJ2uxmd5KT3K/3/eecO3OnihAVFRXbvXv3gHfv3nVJS0trn5qa2jMpKallamrq6JSUlCNJSUnHrl69OkrQ6NGjR4wZMya/OSKioqKydO/evdrbt29Hh4eHbwgLC1vy4sWLxQ8fPlz46NGjJfI5/Pnz57v0+yxHR8fVkZGRm/z8/JYdPXp0uLOz8/a9e/e2NDExKZqRkZEPkRCTlnTt2nXko0ePlj99+nS1vBYUFLQyPDx8aVRU1HIJlMfK+/z9/VfJz0JCQtbKa0+ePNkQHR29MzAwcNOGDRvaa2ho5ENkj8ydO3e5o6Pj9rt37y4NDw9f9uzZs7USLIGnTp0a5u7u3vjevXvDw8LCFvv6+i728vJa5Onpuejy5ctzL126NPf8+fNzTp8+PcvDw2Oeu7v7vDNnzsx2dXWdLgU5evRok6ioqDwaPXp0voiIiIN+fn7rgoODl0moCHF1dR0cGBi4wtvbe5GcAXd3d4NTp04NPHHixICjR4/2P3ToUP8DBw70279/f989e/b02bVrV9/t27f32bJlS+9NmzYNkFYJuYwHDhyo9ejRo/wWFhb5tLS09rx+/XppTEzMihMnTgxxcnLqJcfOyclpgIzC0aNH+x46dKj/3r179+zevXvP9u3b98jP7Ny5s5+jo2NfBwcHfVtbW/0NGzboz58/v+vatWsHLFiwoDMieTUajcbGxmbZrVu3FkVGRi46fvz4SFtb2/4BAQGrjhw5MnDfvn079uzZs3vHjh27tm3btmvLli27Nm7cuGv9+vW7bGxs9lhbW++xsrLaa2lpuW/ZsmX6CxYsGDJnzpx+s2bN6j1jxoz+06ZNG6Cmpib+P7S1tSudPXt24YULFxbcuHFj4fnz5+cfO3Zs7sGDB+fs27dvjp2d3SxbW9sZNjY202fNmjVt5syZ02bMmDFl2rRpU6ZOnTrFxMRk6pQpU6aYmppOmaiqf2BU9Q/8BpL/TF9WpvvfAAAAAElFTkSuQmCC">
+</head>
+<body class="light-theme">
+  <!-- Welcome Modal -->
+  <div id="welcome-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="app-logo">F</div>
+        <h2>Welcome to FactVault</h2>
+        <p>Your daily dose of the world's most fascinating facts</p>
+      </div>
+      <div class="feature-list">
+        <div class="feature">
+          <span class="feature-icon">🔥</span>
+          <div class="feature-text">
+            <h3>Most Interesting</h3>
+            <p>Facts ranked by how fascinating they are</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">✨</span>
+          <div class="feature-text">
+            <h3>Daily Updates</h3>
+            <p>New facts published every day</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🔖</span>
+          <div class="feature-text">
+            <h3>Save Favorites</h3>
+            <p>Bookmark facts you want to remember</p>
+          </div>
+        </div>
+      </div>
+      <button id="welcome-start-btn" class="primary-btn">Start Exploring</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="brand">
+        <div class="app-logo">F</div>
+        <div class="brand-text">
+          <h1>FactVault</h1>
+          <p id="current-date">February 26, 2023</p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </button>
+        <div class="time-display">00:00</div>
+      </div>
+    </div>
+    
+    <!-- Tab Navigation -->
+    <div class="tabs-container">
+      <button id="trending-tab" class="tab active">
+        <span class="tab-icon">🔥</span>
+        Most Interesting
+      </button>
+      <button id="latest-tab" class="tab">
+        <span class="tab-icon">✨</span>
+        Today's Facts
+        <span class="badge new-badge">NEW</span>
+      </button>
+      <button id="saved-tab" class="tab">
+        <span class="tab-icon">🔖</span>
+        Saved
+        <span id="saved-count" class="badge count-badge">0</span>
+      </button>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main>
+    <div id="facts-container" class="facts-container">
+      <!-- Facts will be loaded here by JavaScript -->
+    </div>
+    
+    <!-- Empty state for saved tab -->
+    <div id="empty-saved" class="empty-state hidden">
+      <div class="empty-icon">🔖</div>
+      <h3>No saved facts yet</h3>
+      <p>Tap the bookmark icon on any fact to save it for later</p>
+      <button id="discover-facts-btn" class="secondary-btn">Discover facts</button>
+    </div>
+    
+    <!-- Loading indicator -->
+    <div id="loading-indicator" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading more facts...</p>
+    </div>
+    
+    <!-- End of saved facts indicator -->
+    <div id="end-of-saved" class="end-indicator hidden">
+      <div class="end-line"></div>
+      <p>End of saved facts</p>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="stats">
+        <div class="stat-item">
+          <span id="fact-count">0</span> facts
+        </div>
+        <div class="stat-item">
+          <span id="reading-time">1</span> min read
+        </div>
+      </div>
+      <div class="footer-actions">
+        <button id="view-latest-btn" class="action-btn">
+          <span class="btn-icon">✨</span>
+          See Today's Facts
+        </button>
+        <button id="view-trending-btn" class="action-btn hidden">
+          <span class="btn-icon">🔥</span>
+          Most Interesting
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Fact Template (hidden, used by JavaScript) -->
+  <template id="fact-template">
+    <div class="fact-card">
+      <div class="fact-header">
+        <div class="category-badge">
+          <span class="category-icon"></span>
+          <span class="category-name"></span>
+        </div>
+        <button class="bookmark-btn" aria-label="Save fact">
+          <i class="far fa-star"></i>
+        </button>
+      </div>
+      <p class="fact-text"></p>
+      <div class="fact-meta">
+        <div class="fact-source">Source: <span class="source-name"></span></div>
+        <div class="engagement-score">
+          Engagement: <span class="score-value"></span>
+        </div>
+      </div>
+      <div class="new-badge">NEW TODAY</div>
+    </div>
+  </template>
+
+  <!-- JavaScript files -->
+  <script src="js/facts.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
+////////////////////////////////////////////////////
+// css/styles.css
+////////////////////////////////////////////////////
+
+/* Base Styles */
+:root {
+  /* Light Theme Colors */
+  --light-bg: #f8f9fa;
+  --light-card-bg: #ffffff;
+  --light-text: #212529;
+  --light-text-secondary: #6c757d;
+  --light-border: #dee2e6;
+  --light-header-bg: rgba(255, 255, 255, 0.9);
+  --light-footer-bg: #ffffff;
+  --light-badge-bg: #f0f0f0;
+  
+  /* Dark Theme Colors */
+  --dark-bg: #121212;
+  --dark-card-bg: #1e1e1e;
+  --dark-text: #e9ecef;
+  --dark-text-secondary: #adb5bd;
+  --dark-border: #343a40;
+  --dark-header-bg: rgba(30, 30, 30, 0.9);
+  --dark-footer-bg: #1e1e1e;
+  --dark-badge-bg: #2c2c2c;
+  
+  /* Accent Colors */
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --accent: #8b5cf6;
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  
+  /* Category Colors - Light Theme */
+  --science-light-bg: #dbeafe;
+  --science-light-text: #1e40af;
+  --history-light-bg: #fef3c7;
+  --history-light-text: #92400e;
+  --tech-light-bg: #e9d5ff;
+  --tech-light-text: #7e22ce;
+  --space-light-bg: #e0e7ff;
+  --space-light-text: #3730a3;
+  --psychology-light-bg: #fce7f3;
+  --psychology-light-text: #be185d;
+  --nature-light-bg: #d1fae5;
+  --nature-light-text: #047857;
+  --art-light-bg: #ffe4e6;
+  --art-light-text: #be123c;
+  --food-light-bg: #ffedd5;
+  --food-light-text: #c2410c;
+  --mixed-light-bg: #f3f4f6;
+  --mixed-light-text: #4b5563;
+  
+  /* Category Colors - Dark Theme */
+  --science-dark-bg: #1e3a8a;
+  --science-dark-text: #bfdbfe;
+  --history-dark-bg: #78350f;
+  --history-dark-text: #fef3c7;
+  --tech-dark-bg: #6b21a8;
+  --tech-dark-text: #e9d5ff;
+  --space-dark-bg: #312e81;
+  --space-dark-text: #e0e7ff;
+  --psychology-dark-bg: #9d174d;
+  --psychology-dark-text: #fce7f3;
+  --nature-dark-bg: #065f46;
+  --nature-dark-text: #d1fae5;
+  --art-dark-bg: #9f1239;
+  --art-dark-text: #ffe4e6;
+  --food-dark-bg: #9a3412;
+  --food-dark-text: #ffedd5;
+  --mixed-dark-bg: #374151;
+  --mixed-dark-text: #f3f4f6;
+  
+  /* Animation Timing */
+  --transition-normal: 0.3s ease;
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  position: relative;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+body.light-theme {
+  background-color: var(--light-bg);
+  color: var(--light-text);
+}
+
+body.dark-theme {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all var(--transition-normal);
+}
+
+.primary-btn {
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.primary-btn:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.secondary-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  background-color: var(--light-badge-bg);
+  color: var(--light-text);
+}
+
+.dark-theme .secondary-btn {
+  background-color: var(--dark-badge-bg);
+  color: var(--dark-text);
+}
+
+.icon-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.light-theme .icon-btn {
+  background-color: var(--light-badge-bg);
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .icon-btn {
+  background-color: var(--dark-badge-bg);
+  color: var(--dark-text-secondary);
+}
+
+.icon-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+}
+
+.dark-theme .action-btn {
+  background-color: rgba(99, 102, 241, 0.2);
+}
+
+.btn-icon {
+  margin-right: 0.5rem;
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--light-border);
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.light-theme header {
+  background-color: var(--light-header-bg);
+  border-color: var(--light-border);
+}
+
+.dark-theme header {
+  background-color: var(--dark-header-bg);
+  border-color: var(--dark-border);
+}
+
+.header-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+}
+
+.app-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(to bottom right, var(--primary), var(--accent));
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.brand-text h1 {
+  font-size: 1.25rem;
+  margin-bottom: 0;
+}
+
+.brand-text p {
+  font-size: 0.75rem;
+  margin-bottom: 0;
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .brand-text p {
+  color: var(--dark-text-secondary);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.time-display {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.light-theme .time-display {
+  background-color: var(--light-badge-bg);
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .time-display {
+  background-color: var(--dark-badge-bg);
+  color: var(--dark-text-secondary);
+}
+
+/* Tabs */
+.tabs-container {
+  display: flex;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--light-border);
+}
+
+.dark-theme .tabs-container {
+  border-color: var(--dark-border);
+}
+
+.tab {
+  position: relative;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--light-text-secondary);
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+}
+
+.dark-theme .tab {
+  color: var(--dark-text-secondary);
+}
+
+.tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.tab-icon {
+  margin-right: 0.5rem;
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(25%, -25%);
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.125rem 0.375rem;
+  border-radius: 9999px;
+}
+
+.new-badge {
+  background-color: var(--danger);
+  color: white;
+}
+
+.count-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--light-badge-bg);
+  color: var(--light-text-secondary);
+  margin-left: 0.5rem;
+  position: static;
+  transform: none;
+}
+
+.dark-theme .count-badge {
+  background-color: var(--dark-badge-bg);
+  color: var(--dark-text-secondary);
+}
+
+/* Main Content */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  padding-bottom: 5rem;
+}
+
+.facts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Fact Card */
+.fact-card {
+  position: relative;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), 
+              background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.light-theme .fact-card {
+  background-color: var(--light-card-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .fact-card {
+  background-color: var(--dark-card-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.fact-card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .fact-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.fact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.category-badge {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.category-icon {
+  margin-right: 0.25rem;
+}
+
+.bookmark-btn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+}
+
+.light-theme .bookmark-btn {
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .bookmark-btn {
+  color: var(--dark-text-secondary);
+}
+
+.bookmark-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .bookmark-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bookmark-btn.saved {
+  color: var(--warning);
+}
+
+.fact-text {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.fact-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--light-border);
+}
+
+.dark-theme .fact-meta {
+  border-color: var(--dark-border);
+}
+
+.fact-source {
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .fact-source {
+  color: var(--dark-text-secondary);
+}
+
+.engagement-score {
+  display: flex;
+  align-items: center;
+}
+
+.score-value {
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+.score-value.high {
+  color: var(--success);
+}
+
+.score-value.medium {
+  color: var(--warning);
+}
+
+.fact-card .new-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(0, 0);
+  border-top-right-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+/* Footer */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  border-top: 1px solid var(--light-border);
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.light-theme footer {
+  background-color: var(--light-footer-bg);
+  border-color: var(--light-border);
+}
+
+.dark-theme footer {
+  background-color: var(--dark-footer-bg);
+  border-color: var(--dark-border);
+}
+
+.footer-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-item {
+  font-size: 0.875rem;
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .stat-item {
+  color: var(--dark-text-secondary);
+}
+
+.stat-item span {
+  font-weight: 600;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .empty-state {
+  color: var(--dark-text-secondary);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  margin-bottom: 1.5rem;
+  max-width: 20rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Loading Indicator */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.spinner {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+.spinner::before,
+.spinner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid transparent;
+}
+
+.light-theme .spinner::before {
+  border-color: var(--light-border);
+}
+
+.dark-theme .spinner::before {
+  border-color: var(--dark-border);
+}
+
+.spinner::after {
+  border-top-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  font-size: 0.875rem;
+  color: var(--light-text-secondary);
+  margin-bottom: 0;
+}
+
+.dark-theme .loading-container p {
+  color: var(--dark-text-secondary);
+}
+
+/* End Indicator */
+.end-indicator {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .end-indicator {
+  color: var(--dark-text-secondary);
+}
+
+.end-line {
+  width: 4rem;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--light-border);
+  margin: 0 auto 1rem;
+}
+
+.dark-theme .end-line {
+  background-color: var(--dark-border);
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 1rem;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 28rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.light-theme .modal-content {
+  background-color: var(--light-card-bg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .modal-content {
+  background-color: var(--dark-card-bg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header .app-logo {
+  margin: 0 auto 1rem;
+  width: 4rem;
+  height: 4rem;
+  font-size: 2rem;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.light-theme .feature {
+  background-color: var(--light-badge-bg);
+}
+
+.dark-theme .feature {
+  background-color: var(--dark-badge-bg);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+}
+
+.feature-text h3 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.feature-text p {
+  font-size: 0.875rem;
+  margin-bottom: 0;
+  color: var(--light-text-secondary);
+}
+
+.dark-theme .feature-text p {
+  color: var(--dark-text-secondary);
+}
+
+/* Utils */
+.hidden {
+  display: none !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Category-specific styles */
+.category-science {
+  background-color: var(--science-light-bg);
+  color: var(--science-light-text);
+}
+
+.category-history {
+  background-color: var(--history-light-bg);
+  color: var(--history-light-text);
+}
+
+.category-tech {
+  background-color: var(--tech-light-bg);
+  color: var(--tech-light-text);
+}
+
+.category-space {
+  background-color: var(--space-light-bg);
+  color: var(--space-light-text);
+}
+
+.category-psychology {
+  background-color: var(--psychology-light-bg);
+  color: var(--psychology-light-text);
+}
+
+.category-nature {
+  background-color: var(--nature-light-bg);
+  color: var(--nature-light-text);
+}
+
+.category-art {
+  background-color: var(--art-light-bg);
+  color: var(--art-light-text);
+}
+
+.category-food {
+  background-color: var(--food-light-bg);
+  color: var(--food-light-text);
+}
+
+.category-mixed {
+  background-color: var(--mixed-light-bg);
+  color: var(--mixed-light-text);
+}
+
+/* Dark theme category styles */
+.dark-theme .category-science {
+  background-color: var(--science-dark-bg);
+  color: var(--science-dark-text);
+}
+
+.dark-theme .category-history {
+  background-color: var(--history-dark-bg);
+  color: var(--history-dark-text);
+}
+
+.dark-theme .category-tech {
+  background-color: var(--tech-dark-bg);
+  color: var(--tech-dark-text);
+}
+
+.dark-theme .category-space {
+  background-color: var(--space-dark-bg);
+  color: var(--space-dark-text);
+}
+
+.dark-theme .category-psychology {
+  background-color: var(--psychology-dark-bg);
+  color: var(--psychology-dark-text);
+}
+
+.dark-theme .category-nature {
+  background-color: var(--nature-dark-bg);
+  color: var(--nature-dark-text);
+}
+
+.dark-theme .category-art {
+  background-color: var(--art-dark-bg);
+  color: var(--art-dark-text);
+}
+
+.dark-theme .category-food {
+  background-color: var(--food-dark-bg);
+  color: var(--food-dark-text);
+}
+
+.dark-theme .category-mixed {
+  background-color: var(--mixed-dark-bg);
+  color: var(--mixed-dark-text);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .tab {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+  
+  .fact-text {
+    font-size: 1rem;
+  }
+  
+  .footer-container,
+  .header-container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .stats {
+    gap: 0.75rem;
+  }
+  
+  .stat-item {
+    font-size: 0.8125rem;
+  }
+  
+  .action-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+}
+
+////////////////////////////////////////////////////
+// js/facts.js
+////////////////////////////////////////////////////
+
+// facts.js - Manages the facts data
+
+// Categories with their icons
+const categories = [
+  { id: 'science', name: 'Science', icon: '🔬' },
+  { id: 'history', name: 'History', icon: '📜' },
+  { id: 'tech', name: 'Technology', icon: '💻' },
+  { id: 'space', name: 'Space', icon: '🚀' },
+  { id: 'psychology', name: 'Psychology', icon: '🧠' },
+  { id: 'nature', name: 'Nature', icon: '🌿' },
+  { id: 'art', name: 'Art & Culture', icon: '🎨' },
+  { id: 'food', name: 'Food', icon: '🍽️' },
+  { id: 'mixed', name: 'General', icon: '📌' }
+];
+
+// Set today's date a day earlier for "NEW" facts
+const today = new Date();
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+
+// Sample facts database
+const factsDatabase = [
+  // SCIENCE FACTS
+  { 
+    id: '1', 
+    text: "The human brain can generate about 23 watts of power when awake—enough to power a low-wattage LED light.", 
+    category: "science", 
+    engagement: 98,
+    source: "National Institute of Neurological Disorders",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '2', 
+    text: "A teaspoonful of neutron star would weigh about 6 billion tons—the same as Mount Everest.", 
+    category: "science", 
+    engagement: 97,
+    source: "NASA",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '3', 
+    text: "There are more possible iterations of a game of chess than there are atoms in the observable universe.", 
+    category: "science", 
+    engagement: 95,
+    source: "American Mathematical Society",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '4', 
+    text: "Octopuses have three hearts, nine brains, and blue blood. Two hearts pump blood to the gills, while the third pumps it to the rest of the body.", 
+    category: "science", 
+    engagement: 96,
+    source: "Scientific American",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '5', 
+    text: "If you could fold a piece of paper 42 times, the thickness would reach the moon.", 
+    category: "science", 
+    engagement: 94,
+    source: "NASA",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  
+  // HISTORY FACTS
+  { 
+    id: '6', 
+    text: "The world's oldest known living tree is over 5,000 years old—a Great Basin bristlecone pine in California's White Mountains that was already 500 years old when the pyramids were built.", 
+    category: "history", 
+    engagement: 97,
+    source: "U.S. Forest Service",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '7', 
+    text: "Vikings used the bones of slain animals to make skates for ice skating, using the leg bones of horses, cows, or deer, and attached them to their boots with leather straps.", 
+    category: "history", 
+    engagement: 93,
+    source: "Archaeological Journal",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '8', 
+    text: "Oxford University is older than the Aztec Empire. Teaching began at Oxford in 1096, while the Aztec civilization began with the founding of Tenochtitlán in 1325.", 
+    category: "history", 
+    engagement: 98,
+    source: "Oxford University",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '9', 
+    text: "In ancient Egypt, servants were smeared with honey to attract flies away from the pharaoh.", 
+    category: "history", 
+    engagement: 91,
+    source: "University of Manchester Egyptology",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '10', 
+    text: "The shortest war in history was between Britain and Zanzibar in 1896. Zanzibar surrendered after just 38 minutes.", 
+    category: "history", 
+    engagement: 92,
+    source: "British Naval Historical Archives",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  
+  // TECHNOLOGY FACTS
+  { 
+    id: '11', 
+    text: "The first computer bug was an actual real-life bug. A moth was found trapped between relay contacts in the Harvard Mark II computer in 1947, causing it to malfunction.", 
+    category: "tech", 
+    engagement: 96,
+    source: "Smithsonian Institution",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '12', 
+    text: "The entire internet weighs about 50 grams, the weight of a single strawberry. This is calculated based on the weight of electrons in motion representing all the data.", 
+    category: "tech", 
+    engagement: 99,
+    source: "Science Magazine",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '13', 
+    text: "In 1956, a 5MB hard drive weighed over a ton and had to be moved with forklifts. Today, a microSD card can hold over 100,000 times more data and weighs less than a paperclip.", 
+    category: "tech", 
+    engagement: 95,
+    source: "IBM Archives",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '14', 
+    text: "The Apollo 11 guidance computer that took humans to the moon had less processing power than a modern calculator or digital watch.", 
+    category: "tech", 
+    engagement: 94,
+    source: "NASA",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '15', 
+    text: "The first message sent over the ARPANET (the precursor to the internet) was supposed to be 'LOGIN' but the system crashed after the first two letters, so the first message was just 'LO'.", 
+    category: "tech", 
+    engagement: 91,
+    source: "Internet Society",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  
+  // SPACE FACTS
+  { 
+    id: '16', 
+    text: "There is a planet made of diamonds (55 Cancri e). This exoplanet has a surface made largely of graphite and diamond instead of water and granite.", 
+    category: "space", 
+    engagement: 99,
+    source: "Yale University",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '17', 
+    text: "A day on Venus is longer than a year on Venus. It takes Venus 243 Earth days to rotate once on its axis but only 225 Earth days to orbit the Sun completely.", 
+    category: "space", 
+    engagement: 97,
+    source: "NASA Venus Exploration Program",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '18', 
+    text: "There is an enormous hexagon-shaped storm on Saturn's north pole, with each side nearly as wide as Earth.", 
+    category: "space", 
+    engagement: 96,
+    source: "Cassini Mission Data, NASA/ESA",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '19', 
+    text: "If you could put Saturn in a giant bathtub, it would float. The planet's density is less than water, with a specific gravity of 0.687.", 
+    category: "space", 
+    engagement: 94,
+    source: "NASA",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '20', 
+    text: "The largest known star, UY Scuti, is so big that if placed where our sun is, its outer surface would extend beyond Jupiter's orbit.", 
+    category: "space", 
+    engagement: 95,
+    source: "European Southern Observatory",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  
+  // PSYCHOLOGY FACTS
+  { 
+    id: '21', 
+    text: "The 'Doorway Effect'—forgetting why you entered a room—happens because passing through doorways creates an 'event boundary' in the mind, causing the brain to file away the previous room's memories.", 
+    category: "psychology", 
+    engagement: 96,
+    source: "Journal of Experimental Psychology",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '22', 
+    text: "The average human attention span has dropped from 12 seconds in 2000 to 8 seconds today, which is less than that of a goldfish (9 seconds).", 
+    category: "psychology", 
+    engagement: 97,
+    source: "Microsoft attention span research",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '23', 
+    text: "The human brain can process an image that your eyes see for as little as 13 milliseconds—faster than a typical camera flash.", 
+    category: "psychology", 
+    engagement: 92,
+    source: "MIT Neural Processing Laboratory",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '24', 
+    text: "People are more likely to return lost wallets with larger amounts of money, contradicting traditional economic models that assume people primarily act in self-interest.", 
+    category: "psychology", 
+    engagement: 93,
+    source: "Science Magazine",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '25', 
+    text: "The 'IKEA effect' is a cognitive bias where people place disproportionately high value on products they partially created themselves, like furniture they assembled.", 
+    category: "psychology", 
+    engagement: 91,
+    source: "Harvard Business School",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  
+  // NATURE FACTS
+  { 
+    id: '26', 
+    text: "Wombats are the only animals that produce cube-shaped poop. The cubic shape prevents it from rolling away and marks their territory more effectively.", 
+    category: "nature", 
+    engagement: 97,
+    source: "University of Tasmania Wildlife Conservation",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '27', 
+    text: "Trees can communicate with each other through underground fungal networks called mycorrhizal networks, sharing nutrients and warning each other of dangers.", 
+    category: "nature", 
+    engagement: 98,
+    source: "Journal of Ecology",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '28', 
+    text: "Mantis shrimp can see polarized light and have 16 color receptors (compared to humans' 3), allowing them to see colors we can't even imagine.", 
+    category: "nature", 
+    engagement: 95,
+    source: "Current Biology Journal",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '29', 
+    text: "A single teaspoon of soil contains more microorganisms than there are people on Earth, billions of bacteria, fungi, and other microscopic creatures.", 
+    category: "nature", 
+    engagement: 94,
+    source: "Soil Science Society of America",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '30', 
+    text: "Hummingbirds are the only birds that can fly backwards and upside down, and they can beat their wings up to 80 times per second.", 
+    category: "nature", 
+    engagement: 93,
+    source: "Cornell Lab of Ornithology",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  
+  // ART & CULTURE FACTS
+  { 
+    id: '31', 
+    text: "The Mona Lisa has no eyebrows. It was the fashion in Renaissance Florence to pluck them out, as they were considered unsightly.", 
+    category: "art", 
+    engagement: 94,
+    source: "Louvre Museum",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '32', 
+    text: "The most expensive painting ever sold is Leonardo da Vinci's 'Salvator Mundi,' purchased for $450.3 million in 2017—despite doubts about its authenticity.", 
+    category: "art", 
+    engagement: 92,
+    source: "Christie's Auction House",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '33', 
+    text: "Japan has over 200 flavors of Kit Kat, including wasabi, sake, purple sweet potato, and green tea, many of which are limited edition or regional specialties.", 
+    category: "art", 
+    engagement: 95,
+    source: "Nestlé Japan",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '34', 
+    text: "Van Gogh sold only one painting during his lifetime, 'The Red Vineyard,' for just 400 francs (about $2,000 today).", 
+    category: "art", 
+    engagement: 93,
+    source: "Van Gogh Museum",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '35', 
+    text: "The Great Wave off Kanagawa, one of the world's most recognized artworks, was originally just a cheap print—one of many copies Hokusai printed to satisfy demand.", 
+    category: "art", 
+    engagement: 91,
+    source: "British Museum",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  
+  // FOOD FACTS
+  { 
+    id: '36', 
+    text: "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.", 
+    category: "food", 
+    engagement: 98,
+    source: "National Honey Board",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '37', 
+    text: "The most expensive pizza in the world costs $12,000 and is topped with white truffles, edible gold, lobster, and caviar. It's called the 'Louis XIII' and takes 72 hours to make.", 
+    category: "food", 
+    engagement: 97,
+    source: "Renato Viola, Creator",
+    dateAdded: today,
+    isNew: true
+  },
+  { 
+    id: '38', 
+    text: "Figs are not technically fruits but inverted flowers. What we think of as the fruit is actually a syconium, a special structure with hundreds of tiny flowers inside.", 
+    category: "food", 
+    engagement: 94,
+    source: "Botanical Journal of the Linnean Society",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '39', 
+    text: "Chocolate was once used as currency by the Aztecs. They considered it more valuable than gold and used cacao beans to pay for goods and services.", 
+    category: "food", 
+    engagement: 95,
+    source: "Smithsonian's National Museum of American History",
+    dateAdded: yesterday,
+    isNew: false
+  },
+  { 
+    id: '40', 
+    text: "The world's most expensive coffee, Kopi Luwak, comes from beans eaten and defecated by a cat-like animal called the Asian palm civet. It sells for $100-$600 per pound.", 
+    category: "food", 
+    engagement: 96,
+    source: "Journal of Agricultural and Food Chemistry",
+    dateAdded: yesterday,
+    isNew: false
+  }
+];
+
+// Facts management functions
+const FactsManager = {
+  // Get trending facts by engagement score
+  getTrendingFacts: function(page = 1, limit = 10) {
+    const sortedFacts = [...factsDatabase].sort((a, b) => b.engagement - a.engagement);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    return sortedFacts.slice(startIndex, endIndex);
+  },
+  
+  // Get latest facts (today's facts)
+  getLatestFacts: function(page = 1, limit = 10) {
+    const todayFacts = factsDatabase.filter(fact => fact.isNew);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    return todayFacts.slice(startIndex, endIndex);
+  },
+  
+  // Get facts by IDs (for saved facts)
+  getFactsByIds: function(ids) {
+    return factsDatabase.filter(fact => ids.includes(fact.id));
+  },
+  
+  // Get a category by ID
+  getCategoryById: function(categoryId) {
+    return categories.find(cat => cat.id === categoryId) || categories[8]; // Default to 'mixed'
+  },
+  
+  // Utility function to add a new fact (could be expanded for real API integration)
+  addNewFact: function(fact) {
+    // Add a new fact to the database
+    const newFact = {
+      id: Date.now().toString(), // Simple ID generation
+      dateAdded: new Date(),
+      isNew: true,
+      ...fact
+    };
+    
+    factsDatabase.unshift(newFact);
+    return newFact;
+  },
+  
+  // Mark facts older than a day as not new
+  updateNewStatus: function() {
+    const today = new Date();
+    factsDatabase.forEach(fact => {
+      const factDate = new Date(fact.dateAdded);
+      const dayDiff = (today - factDate) / (1000 * 60 * 60 * 24);
+      if (dayDiff >= 1) {
+        fact.isNew = false;
+      }
+    });
+  }
+};
+
+// Simulate fact fetching from an API (to be used for auto-updates)
+async function fetchNewFacts() {
+  // This would be a real API call in a production app
+  // For now, let's simulate 1-2 new facts coming in
+  
+  console.log('Fetching new facts...');
+  
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
+  // Sample new facts that would come from an API
+  const newFacts = [
+    {
+      text: "The human nose can detect over 1 trillion different scents, far more than previously thought. Earlier research estimated humans could smell about 10,000 odors.",
+      category: "science",
+      engagement: 96,
+      source: "Science Magazine"
+    }
+  ];
+  
+  // Add new facts to our database
+  newFacts.forEach(fact => FactsManager.addNewFact(fact));
+  
+  console.log(`${newFacts.length} new facts added`);
+  return newFacts;
+}
+
+////////////////////////////////////////////////////
+// js/ui.js
+////////////////////////////////////////////////////
+
+// ui.js - Handles UI interactions and rendering
+
+// DOM Elements
+const factTemplate = document.getElementById('fact-template');
+const factsContainer = document.getElementById('facts-container');
+const loadingIndicator = document.getElementById('loading-indicator');
+const emptyState = document.getElementById('empty-saved');
+const endOfSaved = document.getElementById('end-of-saved');
+const trendingTab = document.getElementById('trending-tab');
+const latestTab = document.getElementById('latest-tab');
+const savedTab = document.getElementById('saved-tab');
+const savedCount = document.getElementById('saved-count');
+const factCountEl = document.getElementById('fact-count');
+const readingTimeEl = document.getElementById('reading-time');
+const viewLatestBtn = document.getElementById('view-latest-btn');
+const viewTrendingBtn = document.getElementById('view-trending-btn');
+const discoverFactsBtn = document.getElementById('discover-facts-btn');
+const timeDisplay = document.querySelector('.time-display');
+const welcomeModal = document.getElementById('welcome-modal');
+const welcomeStartBtn = document.getElementById('welcome-start-btn');
+const themeToggle = document.getElementById('theme-toggle');
+const currentDateEl = document.getElementById('current-date');
+
+// UI utility functions
+const UI = {
+  // Initialize UI elements
+  init: function() {
+    // Set current date in header
+    const formattedDate = new Date().toLocaleDateString('en-US', { 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+    currentDateEl.textContent = formattedDate;
+    
+    // Check if welcome modal should be shown (first visit)
+    if (!localStorage.getItem('welcomeShown')) {
+      this.showWelcomeModal();
+    } else {
+      this.hideWelcomeModal();
+    }
+    
+    // Initialize theme from saved preference
+    this.initTheme();
+    
+    // Start timer
+    this.startTimer();
+    
+    // Update saved count badge
+    this.updateSavedCount();
+  },
+  
+  // Clear the facts container
+  clearFactsContainer: function() {
+    factsContainer.innerHTML = '';
+  },
+  
+  // Show loading indicator
+  showLoading: function() {
+    loadingIndicator.classList.remove('hidden');
+  },
+  
+  // Hide loading indicator
+  hideLoading: function() {
+    loadingIndicator.classList.add('hidden');
+  },
+  
+  // Show empty saved state
+  showEmptySaved: function() {
+    emptyState.classList.remove('hidden');
+  },
+  
+  // Hide empty saved state
+  hideEmptySaved: function() {
+    emptyState.classList.add('hidden');
+  },
+  
+  // Show end of saved facts
+  showEndOfSaved: function() {
+    endOfSaved.classList.remove('hidden');
+  },
+  
+  // Hide end of saved facts
+  hideEndOfSaved: function() {
+    endOfSaved.classList.add('hidden');
+  },
+  
+  // Set active tab
+  setActiveTab: function(tabId) {
+    // Remove active class from all tabs
+    [trendingTab, latestTab, savedTab].forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    // Add active class to the selected tab
+    document.getElementById(`${tabId}-tab`).classList.add('active');
+    
+    // Update footer button visibility
+    if (tabId === 'trending') {
+      viewLatestBtn.classList.remove('hidden');
+      viewTrendingBtn.classList.add('hidden');
+    } else if (tabId === 'latest') {
+      viewLatestBtn.classList.add('hidden');
+      viewTrendingBtn.classList.remove('hidden');
+    } else {
+      viewLatestBtn.classList.remove('hidden');
+      viewTrendingBtn.classList.add('hidden');
+    }
+  },
+  
+  // Update saved count badge
+  updateSavedCount: function() {
+    const savedFacts = JSON.parse(localStorage.getItem('savedFacts') || '[]');
+    savedCount.textContent = savedFacts.length;
+    
+    if (savedFacts.length > 0) {
+      savedCount.classList.remove('hidden');
+    } else {
+      savedCount.classList.add('hidden');
+    }
+  },
+  
+  // Render a fact card
+  renderFactCard: function(fact) {
+    // Clone the template
+    const factCard = factTemplate.content.cloneNode(true);
+    
+    // Get elements
+    const cardElement = factCard.querySelector('.fact-card');
+    const categoryBadge = factCard.querySelector('.category-badge');
+    const categoryIcon = factCard.querySelector('.category-icon');
+    const categoryName = factCard.querySelector('.category-name');
+    const factText = factCard.querySelector('.fact-text');
+    const bookmarkBtn = factCard.querySelector('.bookmark-btn');
+    const bookmarkIcon = factCard.querySelector('.bookmark-btn i');
+    const sourceElement = factCard.querySelector('.source-name');
+    const scoreElement = factCard.querySelector('.score-value');
+    const newBadge = factCard.querySelector('.new-badge');
+    
+    // Set unique ID for the card
+    cardElement.setAttribute('data-fact-id', fact.id);
+    
+    // Add random animation delay for staggered appearance
+    const animDelay = Math.random() * 0.3;
+    cardElement.style.animationDelay = `${animDelay}s`;
+    
+    // Get category info
+    const category = FactsManager.getCategoryById(fact.category);
+    
+    // Set category badge
+    categoryBadge.className = `category-badge category-${fact.category}`;
+    categoryIcon.textContent = category.icon;
+    categoryName.textContent = category.name;
+    
+    // Set fact text
+    factText.textContent = fact.text;
+    
+    // Set source
+    sourceElement.textContent = fact.source;
+    
+    // Set engagement score and style
+    scoreElement.textContent = `${fact.engagement}%`;
+    if (fact.engagement >= 95) {
+      scoreElement.classList.add('high');
+    } else if (fact.engagement >= 90) {
+      scoreElement.classList.add('medium');
+    }
+    
+    // Check if fact is saved
+    const savedFacts = JSON.parse(localStorage.getItem('savedFacts') || '[]');
+    if (savedFacts.includes(fact.id)) {
+      bookmarkBtn.classList.add('saved');
+      bookmarkIcon.className = 'fas fa-star';
+    }
+    
+    // Set bookmark button click handler
+    bookmarkBtn.addEventListener('click', function() {
+      const factId = cardElement.getAttribute('data-fact-id');
+      const savedFacts = JSON.parse(localStorage.getItem('savedFacts') || '[]');
+      
+      if (savedFacts.includes(factId)) {
+        // Remove from saved
+        const newSavedFacts = savedFacts.filter(id => id !== factId);
+        localStorage.setItem('savedFacts', JSON.stringify(newSavedFacts));
+        bookmarkBtn.classList.remove('saved');
+        bookmarkIcon.className = 'far fa-star';
+      } else {
+        // Add to saved
+        savedFacts.push(factId);
+        localStorage.setItem('savedFacts', JSON.stringify(savedFacts));
+        bookmarkBtn.classList.add('saved');
+        bookmarkIcon.className = 'fas fa-star';
+      }
+      
+      // Update saved count
+      UI.updateSavedCount();
+    });
+    
+    // Show/hide new badge
+    if (fact.isNew) {
+      newBadge.style.display = 'block';
+    } else {
+      newBadge.style.display = 'none';
+    }
+    
+    // Append to container
+    factsContainer.appendChild(factCard);
+  },
+  
+  // Render a list of facts
+  renderFacts: function(facts) {
+    // Update stats
+    factCountEl.textContent = facts.length;
+    
+    // Calculate reading time (average 200 words per minute)
+    const totalWords = facts.reduce((total, fact) => {
+      return total + fact.text.split(' ').length;
+    }, 0);
+    const readingTime = Math.max(1, Math.round(totalWords / 200));
+    readingTimeEl.textContent = readingTime;
+    
+    // Render each fact
+    facts.forEach(fact => {
+      this.renderFactCard(fact);
+    });
+  },
+  
+  // Start timer to show session time
+  startTimer: function() {
+    let seconds = 0;
+    setInterval(() => {
+      seconds++;
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }, 1000);
+  },
+  
+  // Theme management
+  initTheme: function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    this.setTheme(savedTheme);
+  },
+  
+  setTheme: function(theme) {
+    if (theme === 'dark') {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+      themeToggle.querySelector('i').className = 'fas fa-sun';
+    } else {
+      document.body.classList.add('light-theme');
+      document.body.classList.remove('dark-theme');
+      themeToggle.querySelector('i').className = 'fas fa-moon';
+    }
+    localStorage.setItem('theme', theme);
+  },
+  
+  toggleTheme: function() {
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    this.setTheme(newTheme);
+  },
+  
+  // Welcome modal
+  showWelcomeModal: function() {
+    welcomeModal.style.display = 'flex';
+  },
+  
+  hideWelcomeModal: function() {
+    welcomeModal.style.display = 'none';
+    localStorage.setItem('welcomeShown', 'true');
+  }
+};
+
+////////////////////////////////////////////////////
+// js/app.js
+////////////////////////////////////////////////////
+
+// app.js - Main application logic
+
+// Application state
+let currentTab = 'trending';
+let currentPage = 1;
+let isLoading = false;
+let hasMoreFacts = true;
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize UI
+  UI.init();
+  
+  // Load initial facts
+  loadFacts(currentTab, 1);
+  
+  // Set up event listeners
+  setupEventListeners();
+  
+  // Set up infinite scrolling
+  setupInfiniteScrolling();
+  
+  // Set up auto-update for new facts (simulated)
+  setupAutoUpdates();
+});
+
+// Set up event listeners
+function setupEventListeners() {
+  // Tab switching
+  trendingTab.addEventListener('click', () => {
+    if (currentTab !== 'trending') {
+      currentTab = 'trending';
+      currentPage = 1;
+      UI.clearFactsContainer();
+      UI.setActiveTab(currentTab);
+      UI.hideEmptySaved();
+      UI.hideEndOfSaved();
+      loadFacts(currentTab, 1);
+    }
+  });
+  
+  latestTab.addEventListener('click', () => {
+    if (currentTab !== 'latest') {
+      currentTab = 'latest';
+      currentPage = 1;
+      UI.clearFactsContainer();
+      UI.setActiveTab(currentTab);
+      UI.hideEmptySaved();
+      UI.hideEndOfSaved();
+      loadFacts(currentTab, 1);
+      
+      // Hide the NEW badge after clicking
+      latestTab.querySelector('.new-badge').classList.add('hidden');
+    }
+  });
+  
+  savedTab.addEventListener('click', () => {
+    if (currentTab !== 'saved') {
+      currentTab = 'saved';
+      UI.clearFactsContainer();
+      UI.setActiveTab(currentTab);
+      loadSavedFacts();
+    }
+  });
+  
+  // Footer buttons
+  viewLatestBtn.addEventListener('click', () => {
+    if (currentTab !== 'latest') {
+      currentTab = 'latest';
+      currentPage = 1;
+      UI.clearFactsContainer();
+      UI.setActiveTab(currentTab);
+      UI.hideEmptySaved();
+      UI.hideEndOfSaved();
+      loadFacts(currentTab, 1);
+      
+      // Hide the NEW badge after clicking
+      latestTab.querySelector('.new-badge').classList.add('hidden');
+    }
+  });
+  
+  viewTrendingBtn.addEventListener('click', () => {
+    if (currentTab !== 'trending') {
+      currentTab = 'trending';
+      currentPage = 1;
+      UI.clearFactsContainer();
+      UI.setActiveTab(currentTab);
+      UI.hideEmptySaved();
+      UI.hideEndOfSaved();
+      loadFacts(currentTab, 1);
+    }
+  });
+  
+  // Discover facts button on empty state
+  discoverFactsBtn.addEventListener('click', () => {
+    currentTab = 'trending';
+    currentPage = 1;
+    UI.clearFactsContainer();
+    UI.setActiveTab(currentTab);
+    UI.hideEmptySaved();
+    loadFacts(currentTab, 1);
+  });
+  
+  // Welcome modal close
+  welcomeStartBtn.addEventListener('click', () => {
+    UI.hideWelcomeModal();
+  });
+  
+  // Theme toggle
+  themeToggle.addEventListener('click', () => {
+    UI.toggleTheme();
+  });
+}
+
+// Load facts based on current tab and page
+async function loadFacts(tab, page, append = false) {
+  if (isLoading) return;
+  
+  isLoading = true;
+  if (!append) {
+    UI.clearFactsContainer();
+  }
+  UI.showLoading();
+  
+  // Simulate network delay for demo purposes
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
+  let facts = [];
+  if (tab === 'trending') {
+    facts = FactsManager.getTrendingFacts(page);
+  } else if (tab === 'latest') {
+    facts = FactsManager.getLatestFacts(page);
+  }
+  
+  if (facts.length === 0) {
+    // No more facts to load
+    hasMoreFacts = false;
+  } else {
+    if (!append) {
+      UI.clearFactsContainer();
+    }
+    UI.renderFacts(facts);
+    hasMoreFacts = facts.length === 10; // Assuming 10 facts per page
+  }
+  
+  UI.hideLoading();
+  isLoading = false;
+}
+
+// Load saved facts
+function loadSavedFacts() {
+  const savedFactIds = JSON.parse(localStorage.getItem('savedFacts') || '[]');
+  
+  if (savedFactIds.length === 0) {
+    UI.showEmptySaved();
+    UI.hideEndOfSaved();
+  } else {
+    UI.hideEmptySaved();
+    UI.showEndOfSaved();
+    
+    const savedFacts = FactsManager.getFactsByIds(savedFactIds);
+    UI.renderFacts(savedFacts);
+  }
+}
+
+// Set up infinite scrolling
+function setupInfiniteScrolling() {
+  // Create an Intersection Observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      // If the loading indicator is visible and we're not already loading
+      if (entry.isIntersecting && !isLoading && hasMoreFacts && currentTab !== 'saved') {
+        currentPage++;
+        loadFacts(currentTab, currentPage, true);
+      }
+    });
+  }, {
+    root: null, // viewport
+    rootMargin: '100px',
+    threshold: 0.1
+  });
+  
+  // Observe the loading indicator
+  observer.observe(loadingIndicator);
+}
+
+// Set up automatic updates of facts (simulated)
+function setupAutoUpdates() {
+  // In a real application, this would use WebSockets or polling to get new facts
+  // For this demo, we'll just add new facts every few minutes
+  
+  // Update every 5 minutes
+  setInterval(async () => {
+    const newFacts = await fetchNewFacts();
+    
+    // Show NEW badge if we have new facts
+    if (newFacts.length > 0 && currentTab !== 'latest') {
+      latestTab.querySelector('.new-badge').classList.remove('hidden');
+      
+      // If we're on the trending tab, we need to update the content
+      if (currentTab === 'trending') {
+        // Keep the current scroll position
+        const scrollPos = window.scrollY;
+        
+        // Reload the first page of trending facts to include new content
+        currentPage = 1;
+        await loadFacts(currentTab, 1);
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollPos);
+      }
+    }
+  }, 5 * 60 * 1000); // 5 minutes
+}
